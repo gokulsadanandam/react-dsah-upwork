@@ -4,10 +4,8 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
@@ -18,22 +16,7 @@ import MailIcon from "@material-ui/icons/Mail";
 
 import { Link, Switch, Route } from "react-router-dom";
 import AppHeader from "./App.Header";
-const routes = [
-  {
-    path: "/",
-    exact: true,
-    main: () => <h2>Home</h2>
-  },
-  {
-    path: "/bubblegum",
-    main: () => <h2>Bubblegum</h2>
-  },
-  {
-    path: "/shoelaces",
-    sidebar: () => <div>shoelaces!</div>,
-    main: () => <h2>Shoelaces</h2>
-  }
-];
+import routes from "./App.Routes";
 
 const drawerWidth = 240;
 
@@ -97,7 +80,7 @@ const useStyles = makeStyles(theme => ({
 export default function PersistentDrawerLeft() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -126,57 +109,18 @@ export default function PersistentDrawerLeft() {
         <div className={classes.drawerHeader}>
           <h2>RevTech.ai</h2>
         </div>
-        <Divider />
         <List>
-          {[
-            {
-              name: "Inbox",
-              route: "bubblegum"
-            },
-            {
-              name: "Starred",
-              route: "shoelaces"
-            },
-            {
-              name: "Email",
-              route: "bubblegum"
-            }
-          ].map((text, index) => (
-            <ListItem button key={text.route}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <Link to={text.route}>
-                <ListItemText primary={text.name} />
-              </Link>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {[
-            {
-              name: "All mail",
-              route: "mail"
-            },
-            {
-              name: "Trash",
-              route: "trash"
-            },
-            {
-              name: "Spam",
-              route: "spam"
-            }
-          ].map((text, index) => (
-            <ListItem button key={text.route}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <Link to={text.route}>
-                <ListItemText primary={text.name} />
-              </Link>
-            </ListItem>
-          ))}
+          {routes.map((route, index) => {
+            return [
+              route.type == "sub-header" ? <Divider variant="middle" /> : "",
+              <ListItem button key={index}>
+                <ListItemIcon>{route.icon()}</ListItemIcon>
+                <Link to={route.path} className="custom-links">
+                  <ListItemText primary={route.name} />
+                </Link>
+              </ListItem>
+            ];
+          })}
         </List>
         <div>
           <IconButton onClick={handleDrawerClose}>
@@ -201,7 +145,7 @@ export default function PersistentDrawerLeft() {
               key={index}
               path={route.path}
               exact={route.exact}
-              children={<route.main />}
+              children={<route.component />}
             />
           ))}
         </Switch>

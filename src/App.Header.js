@@ -27,7 +27,7 @@ const AppHeader = props => (
         <MenuIcon />
       </IconButton>
       <Typography variant="h6" noWrap>
-        Persistent drawer
+        Hello
       </Typography>
     </Toolbar>
   </AppBar>
